@@ -1,0 +1,88 @@
+@startuml api-endpoints
+!theme plain
+title API Person - Endpoints REST
+
+actor Client
+participant PersonController
+participant PersonRepository
+database PostgreSQL
+
+== Récupérer toutes les personnes ==
+Client -> PersonController : GET /api/persons
+PersonController -> PersonRepository : findAll()
+PersonRepository -> PostgreSQL : SELECT * FROM person
+PostgreSQL --> PersonRepository : List<Person>
+PersonRepository --> PersonController : List<Person>
+PersonController --> Client : 200 OK + List<Person>
+
+== Récupérer une personne par ID ==
+Client -> PersonController : GET /api/persons/{id}
+PersonController -> PersonRepository : findById(id)
+PersonRepository -> PostgreSQL : SELECT * FROM person WHERE id = ?
+alt Person trouvée
+    PostgreSQL --> PersonRepository : Person
+    PersonRepository --> PersonController : Optional<Person>
+    PersonController --> Client : 200 OK + Person
+else Person non trouvée
+    PostgreSQL --> PersonRepository : empty
+    PersonRepository --> PersonController : Optional.empty()
+    PersonController --> Client : 404 NOT FOUND
+end
+
+== Créer une nouvelle personne ==
+Client -> PersonController : POST /api/persons + Person JSON
+alt Validation OK
+    PersonController -> PersonRepository : save(person)
+    PersonRepository -> PostgreSQL : INSERT INTO person (name, data) VALUES (?, ?)
+    PostgreSQL --> PersonRepository : Person with ID
+    PersonRepository --> PersonController : Person
+    PersonController --> Client : 201 CREATED + Person
+else Validation KO
+    PersonController --> Client : 400 BAD REQUEST
+end
+
+== Mettre à jour une personne ==
+Client -> PersonController : PUT /api/persons/{id} + Person JSON
+PersonController -> PersonRepository : findById(id)
+PersonRepository -> PostgreSQL : SELECT * FROM person WHERE id = ?
+alt Person trouvée
+    PostgreSQL --> PersonRepository : Person
+    PersonRepository --> PersonController : Optional<Person>
+    PersonController -> PersonRepository : save(updatedPerson)
+    PersonRepository -> PostgreSQL : UPDATE person SET name = ?, data = ? WHERE id = ?
+    PostgreSQL --> PersonRepository : Updated Person
+    PersonRepository --> PersonController : Person
+    PersonController --> Client : 200 OK + Updated Person
+else Person non trouvée
+    PostgreSQL --> PersonRepository : empty
+    PersonRepository --> PersonController : Optional.empty()
+    PersonController --> Client : 404 NOT FOUND
+end
+
+== Supprimer une personne ==
+Client -> PersonController : DELETE /api/persons/{id}
+PersonController -> PersonRepository : existsById(id)
+PersonRepository -> PostgreSQL : SELECT COUNT(*) FROM person WHERE id = ?
+alt Person existe
+    PostgreSQL --> PersonRepository : true
+    PersonRepository --> PersonController : true
+    PersonController -> PersonRepository : deleteById(id)
+    PersonRepository -> PostgreSQL : DELETE FROM person WHERE id = ?
+    PostgreSQL --> PersonRepository : success
+    PersonRepository --> PersonController : void
+    PersonController --> Client : 204 NO CONTENT
+else Person n'existe pas
+    PostgreSQL --> PersonRepository : false
+    PersonRepository --> PersonController : false
+    PersonController --> Client : 404 NOT FOUND
+end
+
+== Rechercher par nom ==
+Client -> PersonController : GET /api/persons/search?name=xxx
+PersonController -> PersonRepository : findByNameContainingIgnoreCase(name)
+PersonRepository -> PostgreSQL : SELECT * FROM person WHERE UPPER(name) LIKE UPPER(?)
+PostgreSQL --> PersonRepository : List<Person>
+PersonRepository --> PersonController : List<Person>
+PersonController --> Client : 200 OK + List<Person>
+
+@enduml

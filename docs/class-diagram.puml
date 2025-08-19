@@ -1,0 +1,57 @@
+@startuml class-diagram
+!theme plain
+title API Person - Diagramme de Classes
+
+package "com.debray.demo.controller" {
+    class PersonController {
+        - PersonRepository personRepository
+        --
+        + getAllPersons() : List<Person>
+        + getPersonById(Integer id) : ResponseEntity<Person>
+        + createPerson(Person person) : ResponseEntity<Person>
+        + updatePerson(Integer id, Person personDetails) : ResponseEntity<Person>
+        + deletePerson(Integer id) : ResponseEntity<Void>
+        + searchByName(String name) : List<Person>
+    }
+}
+
+package "com.debray.demo.repository" {
+    interface PersonRepository extends JpaRepository {
+        + findByName(String name) : List<Person>
+        + findByNameContainingIgnoreCase(String name) : List<Person>
+        + existsByName(String name) : boolean
+    }
+}
+
+package "com.debray.demo.entity" {
+    class Person {
+        - Integer id
+        - String name
+        - byte[] data
+        --
+        + Person()
+        + Person(String name)
+        + Person(String name, byte[] data)
+        + getId() : Integer
+        + setId(Integer id) : void
+        + getName() : String
+        + setName(String name) : void
+        + getData() : byte[]
+        + setData(byte[] data) : void
+        + toString() : String
+    }
+}
+
+package "Database" {
+    entity "person table" as PersonTable {
+        * id : integer (PK, auto-increment)
+        * name : text (NOT NULL)
+        data : bytea
+    }
+}
+
+PersonController --> PersonRepository : uses
+PersonRepository --> Person : manages
+Person --> PersonTable : maps to
+
+@enduml

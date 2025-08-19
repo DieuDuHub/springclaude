@@ -1,0 +1,63 @@
+@startuml component-diagram
+!theme plain
+title API Person - Diagramme de Composants
+
+package "Spring Boot Application" {
+    component [DemoApplication] as app
+    component [PersonController] as controller
+    component [PersonRepository] as repository
+    component [Person Entity] as entity
+    
+    controller ..> repository : uses
+    repository ..> entity : manages
+}
+
+package "Spring Framework" {
+    component [Spring Web MVC] as mvc
+    component [Spring Data JPA] as jpa
+    component [Hibernate ORM] as hibernate
+    component [HikariCP Connection Pool] as hikari
+}
+
+package "Database" {
+    database PostgreSQL {
+        component [person table] as table
+    }
+}
+
+package "External Libraries" {
+    component [PostgreSQL JDBC Driver] as driver
+}
+
+' Spring Boot utilise les composants Spring
+app ..> mvc : uses
+app ..> jpa : uses
+controller ..> mvc : extends
+repository ..> jpa : extends
+entity ..> hibernate : managed by
+
+' Connexions base de données
+hibernate ..> hikari : uses
+hikari ..> driver : uses
+driver ..> PostgreSQL : connects to
+
+' Mapping
+entity ..> table : maps to
+
+' Annotations
+note right of controller
+    @RestController
+    @RequestMapping("/api/persons")
+end note
+
+note right of repository
+    @Repository
+    extends JpaRepository<Person, Integer>
+end note
+
+note right of entity
+    @Entity
+    @Table(name = "person")
+end note
+
+@enduml

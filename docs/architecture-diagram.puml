@@ -1,0 +1,74 @@
+@startuml architecture
+!theme plain
+title API Person - Architecture Générale
+
+package "Presentation Layer" {
+    [PersonController] as controller
+    note right of controller
+        REST API endpoints:
+        • GET /api/persons
+        • GET /api/persons/{id}
+        • POST /api/persons
+        • PUT /api/persons/{id}
+        • DELETE /api/persons/{id}
+        • GET /api/persons/search?name=xxx
+    end note
+}
+
+package "Business Layer" {
+    [PersonRepository] as repository
+    note right of repository
+        Spring Data JPA Repository
+        • CRUD operations
+        • Custom queries
+        • findByName()
+        • findByNameContainingIgnoreCase()
+        • existsByName()
+    end note
+}
+
+package "Data Layer" {
+    [Person Entity] as entity
+    database "PostgreSQL" as db {
+        [person table] as table
+    }
+    
+    note right of entity
+        JPA Entity mapping:
+        • @Id @GeneratedValue id
+        • @Column name (NOT NULL)
+        • @Column data (bytea)
+    end note
+    
+    note right of table
+        Database table structure:
+        • id: integer (PK, auto-increment)
+        • name: text (NOT NULL)
+        • data: bytea (nullable)
+    end note
+}
+
+' Relations
+controller --> repository : @Autowired
+repository --> entity : manages
+entity --> table : maps to
+
+' HTTP Requests
+cloud "HTTP Requests" as http
+http --> controller : REST calls
+
+' Configuration
+package "Configuration" {
+    [application.properties] as config
+    note right of config
+        spring.datasource.url=jdbc:postgresql://localhost:5432/md
+        spring.datasource.username=matthieudebray
+        spring.datasource.password=Toto2016
+        spring.jpa.hibernate.ddl-auto=update
+        spring.jpa.show-sql=true
+    end note
+}
+
+config ..> db : configures connection
+
+@enduml
