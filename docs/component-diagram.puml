@@ -1,6 +1,6 @@
 @startuml component-diagram
 !theme plain
-title API Person - Diagramme de Composants
+title Person API - Component Diagram
 
 package "Spring Boot Application" {
     component [DemoApplication] as app
@@ -29,7 +29,7 @@ package "External Libraries" {
     component [PostgreSQL JDBC Driver] as driver
 }
 
-' Spring Boot utilise les composants Spring
+' Spring Boot uses Spring components
 app ..> mvc : uses
 app ..> jpa : uses
 controller ..> mvc : extends

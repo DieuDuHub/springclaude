@@ -1,6 +1,6 @@
 @startuml class-diagram
 !theme plain
-title API Person - Diagramme de Classes
+title Person API - Class Diagram
 
 package "com.debray.demo.controller" {
     class PersonController {
