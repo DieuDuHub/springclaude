@@ -1,54 +1,54 @@
-# Documentation API Person
+# Person API Documentation
 
-Cette documentation décrit l'architecture et le fonctionnement de l'API REST pour la gestion des personnes dans l'application Spring Boot.
+This documentation describes the architecture and operation of the REST API for person management in the Spring Boot application.
 
-## Vue d'ensemble
+## Overview
 
-L'API permet de gérer une table `person` dans une base de données PostgreSQL via des endpoints REST standard (CRUD).
+The API allows managing a `person` table in a PostgreSQL database via standard REST endpoints (CRUD).
 
-## Diagrammes PlantUML
+## PlantUML Diagrams
 
-### 1. Diagramme de Classes
-- **Fichier :** `class-diagram.puml`
-- **Description :** Montre la structure des classes et leurs relations
-- **Composants :** PersonController, PersonRepository, Person Entity et table PostgreSQL
+### 1. Class Diagram
+- **File:** `class-diagram.puml`
+- **Description:** Shows the structure of classes and their relationships
+- **Components:** PersonController, PersonRepository, Person Entity and PostgreSQL table
 
-### 2. Diagramme de Séquence
-- **Fichier :** `sequence-diagram.puml`
-- **Description :** Illustre les interactions pour chaque endpoint REST
-- **Scénarios couverts :**
-  - GET /api/persons (récupérer toutes les personnes)
-  - GET /api/persons/{id} (récupérer une personne par ID)
-  - POST /api/persons (créer une nouvelle personne)
-  - PUT /api/persons/{id} (mettre à jour une personne)
-  - DELETE /api/persons/{id} (supprimer une personne)
-  - GET /api/persons/search?name=xxx (rechercher par nom)
+### 2. Sequence Diagram
+- **File:** `sequence-diagram.puml`
+- **Description:** Illustrates interactions for each REST endpoint
+- **Covered scenarios:**
+  - GET /api/persons (retrieve all persons)
+  - GET /api/persons/{id} (retrieve a person by ID)
+  - POST /api/persons (create a new person)
+  - PUT /api/persons/{id} (update a person)
+  - DELETE /api/persons/{id} (delete a person)
+  - GET /api/persons/search?name=xxx (search by name)
 
-### 3. Diagramme d'Architecture
-- **Fichier :** `architecture-diagram.puml`
-- **Description :** Vue d'ensemble de l'architecture en couches
-- **Couches :**
+### 3. Architecture Diagram
+- **File:** `architecture-diagram.puml`
+- **Description:** Overview of the layered architecture
+- **Layers:**
   - Presentation Layer (PersonController)
   - Business Layer (PersonRepository)
   - Data Layer (Person Entity + PostgreSQL)
 
-### 4. Diagramme de Composants
-- **Fichier :** `component-diagram.puml`
-- **Description :** Relations entre les composants Spring Boot et externes
-- **Technologies :** Spring Web MVC, Spring Data JPA, Hibernate, HikariCP, PostgreSQL
+### 4. Component Diagram
+- **File:** `component-diagram.puml`
+- **Description:** Relationships between Spring Boot and external components
+- **Technologies:** Spring Web MVC, Spring Data JPA, Hibernate, HikariCP, PostgreSQL
 
-## Endpoints API
+## API Endpoints
 
-| Méthode | URL | Description | Réponse |
+| Method | URL | Description | Response |
 |---------|-----|-------------|---------|
-| GET | `/api/persons` | Liste toutes les personnes | 200 + List\<Person\> |
-| GET | `/api/persons/{id}` | Récupère une personne | 200 + Person ou 404 |
-| POST | `/api/persons` | Crée une personne | 201 + Person ou 400 |
-| PUT | `/api/persons/{id}` | Met à jour une personne | 200 + Person ou 404 |
-| DELETE | `/api/persons/{id}` | Supprime une personne | 204 ou 404 |
-| GET | `/api/persons/search?name=xxx` | Recherche par nom | 200 + List\<Person\> |
+| GET | `/api/persons` | Lists all persons | 200 + List\<Person\> |
+| GET | `/api/persons/{id}` | Retrieves a person | 200 + Person or 404 |
+| POST | `/api/persons` | Creates a person | 201 + Person or 400 |
+| PUT | `/api/persons/{id}` | Updates a person | 200 + Person or 404 |
+| DELETE | `/api/persons/{id}` | Deletes a person | 204 or 404 |
+| GET | `/api/persons/search?name=xxx` | Search by name | 200 + List\<Person\> |
 
-## Structure de la table PostgreSQL
+## PostgreSQL Table Structure
 
 ```sql
 Table "person"
@@ -61,7 +61,7 @@ Table "person"
 
 ## Configuration
 
-L'application se connecte à PostgreSQL via la configuration dans `application.properties` :
+The application connects to PostgreSQL via the configuration in `application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/md
@@ -71,19 +71,19 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-## Génération des diagrammes
+## Diagram Generation
 
-Pour générer les images à partir des fichiers PlantUML, utilisez :
+To generate images from PlantUML files, use:
 
 ```bash
-# Installer PlantUML (si nécessaire)
+# Install PlantUML (if necessary)
 npm install -g plantuml
 
-# Générer tous les diagrammes
+# Generate all diagrams
 plantuml docs/*.puml
 
-# Ou générer un diagramme spécifique
+# Or generate a specific diagram
 plantuml docs/class-diagram.puml
 ```
 
-Les images seront générées dans le même répertoire avec l'extension `.png`.
+Images will be generated in the same directory with the `.png` extension.

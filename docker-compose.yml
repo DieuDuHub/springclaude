@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Application Spring Boot
+  # Spring Boot Application
   demo-app:
     build:
       context: .
@@ -22,7 +22,7 @@ services:
       - demo-network
     restart: unless-stopped
 
-# Réseau pour la communication entre services
+# Network for service communication
 networks:
   demo-network:
     driver: bridge

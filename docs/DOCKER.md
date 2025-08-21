@@ -1,29 +1,29 @@
 # Docker Documentation
 
-Ce document explique comment construire et déployer l'application Spring Boot avec Docker.
+This document explains how to build and deploy the Spring Boot application with Docker.
 
-## Fichiers Docker
+## Docker Files
 
-- `Dockerfile` - Image Docker multi-stage pour l'application
-- `docker-compose.yml` - Orchestration avec PostgreSQL
-- `.dockerignore` - Fichiers à exclure du build
-- `application-docker.properties` - Configuration pour l'environnement Docker
+- `Dockerfile` - Multi-stage Docker image for the application
+- `docker-compose.yml` - Orchestration with PostgreSQL
+- `.dockerignore` - Files to exclude from build
+- `application-docker.properties` - Configuration for Docker environment
 
-## Construction de l'image
+## Image Building
 
-### Build simple
+### Simple build
 ```bash
 docker build -t demo-spring-app .
 ```
 
-### Build avec tag de version
+### Build with version tag
 ```bash
 docker build -t demo-spring-app:1.0.0 .
 ```
 
-## Exécution avec Docker
+## Running with Docker
 
-### Avec PostgreSQL local existant
+### With existing local PostgreSQL
 ```bash
 docker run -p 8080:8080 \
   -e DB_HOST=host.docker.internal \
@@ -34,79 +34,79 @@ docker run -p 8080:8080 \
   demo-spring-app
 ```
 
-### Avec docker-compose (recommandé)
+### With docker-compose (recommended)
 ```bash
-# Démarrer tous les services
+# Start all services
 docker-compose up -d
 
-# Voir les logs
+# View logs
 docker-compose logs -f
 
-# Arrêter les services
+# Stop services
 docker-compose down
 
-# Arrêter et supprimer les volumes
+# Stop and remove volumes
 docker-compose down -v
 ```
 
-## Variables d'environnement
+## Environment Variables
 
-| Variable | Description | Valeur par défaut |
+| Variable | Description | Default Value |
 |----------|-------------|-------------------|
-| `DB_HOST` | Hôte PostgreSQL | localhost |
-| `DB_PORT` | Port PostgreSQL | 5432 |
-| `DB_NAME` | Nom de la base | md |
-| `DB_USERNAME` | Utilisateur DB | matthieudebray |
-| `DB_PASSWORD` | Mot de passe DB | Toto2016 |
-| `SERVER_PORT` | Port de l'app | 8080 |
-| `SHOW_SQL` | Afficher SQL | false |
-| `JAVA_OPTS` | Options JVM | -Xmx512m -Xms256m |
+| `DB_HOST` | PostgreSQL host | localhost |
+| `DB_PORT` | PostgreSQL port | 5432 |
+| `DB_NAME` | Database name | md |
+| `DB_USERNAME` | DB username | matthieudebray |
+| `DB_PASSWORD` | DB password | Toto2016 |
+| `SERVER_PORT` | App port | 8080 |
+| `SHOW_SQL` | Show SQL | false |
+| `JAVA_OPTS` | JVM options | -Xmx512m -Xms256m |
 
 ## Healthcheck
 
-L'application expose un endpoint de santé accessible via :
+The application exposes a health endpoint accessible via:
 ```bash
 curl http://localhost:8080/actuator/health
 ```
 
-## Optimisations Docker
+## Docker Optimizations
 
-### Build multi-stage
-- Étape 1 : Compilation avec JDK complet
-- Étape 2 : Exécution avec JRE léger (Alpine)
+### Multi-stage build
+- Stage 1: Compilation with full JDK
+- Stage 2: Execution with lightweight JRE (Alpine)
 
-### Sécurité
-- Utilisateur non-root (`spring:spring`)
-- Image Alpine (plus petite surface d'attaque)
+### Security
+- Non-root user (`spring:spring`)
+- Alpine image (smaller attack surface)
 
 ### Performance
-- Cache des dépendances Maven optimisé
-- Image finale minimale (JRE seulement)
+- Optimized Maven dependency cache
+- Minimal final image (JRE only)
 
-## Volumes persistants
+## Persistent Volumes
 
-Le docker-compose crée un volume `postgres_data` pour persister les données PostgreSQL.
+Docker-compose creates a `postgres_data` volume to persist PostgreSQL data.
 
-## Réseau
+## Network
 
-Les conteneurs communiquent via un réseau bridge `demo-network`.
+Containers communicate via a bridge network `demo-network`.
 
-## Commandes utiles
+## Useful Commands
 
 ```bash
-# Voir les conteneurs en cours
+# View running containers
 docker-compose ps
 
-# Accéder au conteneur de l'app
+# Access app container
 docker-compose exec demo-app sh
 
-# Accéder à PostgreSQL
+# Access PostgreSQL
 docker-compose exec postgres-db psql -U matthieudebray -d md
 
-# Rebuild et redémarrage
+# Rebuild and restart
 docker-compose up --build -d
 
-# Supprimer tout (conteneurs, volumes, réseau)
+# Remove everything (containers, volumes, network)
 docker-compose down -v --rmi all
 ```
 

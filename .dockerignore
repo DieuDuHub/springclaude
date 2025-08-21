@@ -1,12 +1,12 @@
-# Fichiers et dossiers à ignorer lors du build Docker
+# Files and folders to ignore during Docker build
 
-# Fichiers de build
+# Build files
 target/
 *.jar
 *.war
 *.ear
 
-# Fichiers IDE
+# IDE files
 .idea/
 *.iml
 .vscode/
@@ -14,7 +14,7 @@ target/
 .project
 .classpath
 
-# Fichiers OS
+# OS files
 .DS_Store
 Thumbs.db
 
@@ -22,28 +22,28 @@ Thumbs.db
 *.log
 logs/
 
-# Fichiers temporaires
+# Temporary files
 *.tmp
 *.temp
 
-# Documentation générée
+# Generated documentation
 docs/*.png
 docs/*.svg
 
-# Fichiers Git
+# Git files
 .git/
 .gitignore
 
-# Fichiers Docker
+# Docker files
 Dockerfile
 .dockerignore
 
-# Fichiers de configuration locaux
+# Local configuration files
 application-local.properties
 application-dev.properties
 
-# Fichiers de test
+# Test files
 src/test/
 
-# Cache Maven local
+# Local Maven cache
 .m2/

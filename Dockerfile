@@ -1,53 +1,53 @@
-# Dockerfile pour l'application Spring Boot Demo
+# Dockerfile for Spring Boot Demo application
 FROM amazoncorretto:17-alpine AS builder
 
-# Installer Maven
+# Install Maven
 RUN apk add --no-cache maven
 
-# Définir le répertoire de travail
+# Set working directory
 WORKDIR /app
 
-# Copier le fichier POM pour optimiser le cache
+# Copy POM file to optimize Docker cache
 COPY pom.xml .
 
-# Télécharger les dépendances (pour optimiser le cache Docker)
+# Download dependencies (to optimize Docker cache)
 RUN mvn dependency:go-offline -B
 
-# Copier le code source
+# Copy source code
 COPY src src
 
-# Construire l'application
+# Build application
 RUN mvn clean package -DskipTests
 
-# Image finale plus légère
+# Lighter final image
 FROM amazoncorretto:17-alpine
 
-# Créer un utilisateur non-root pour la sécurité
+# Create non-root user for security
 RUN addgroup -g 1001 -S spring && \
     adduser -u 1001 -S spring -G spring
 
-# Définir le répertoire de travail
+# Set working directory
 WORKDIR /app
 
-# Copier le JAR depuis l'étape de build
+# Copy JAR from build stage
 COPY --from=builder /app/target/demo-*.jar app.jar
 
-# Changer le propriétaire du fichier
+# Change file ownership
 RUN chown spring:spring app.jar
 
-# Basculer vers l'utilisateur non-root
+# Switch to non-root user
 USER spring:spring
 
-# Variables d'environnement par défaut
+# Default environment variables
 ENV SPRING_PROFILES_ACTIVE=docker
 ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
-# Exposer le port 8080
+# Expose port 8080
 EXPOSE 8080
 
-# Point d'entrée avec gestion des signaux
+# Entry point with signal handling
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
 
-# Healthcheck pour Docker
+# Healthcheck for Docker
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1

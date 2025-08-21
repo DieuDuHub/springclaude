@@ -1,24 +1,24 @@
 #!/bin/bash
 
-# Script pour lancer l'application Docker avec la base de données locale
+# Script to run Docker application with local database
 
-echo "🚀 Lancement de l'application Spring Boot avec PostgreSQL local"
+echo "🚀 Starting Spring Boot application with local PostgreSQL"
 
-# Vérifier que PostgreSQL local est accessible
+# Check if local PostgreSQL is accessible
 if ! nc -z localhost 5432; then
-    echo "❌ PostgreSQL n'est pas accessible sur localhost:5432"
-    echo "   Veuillez démarrer votre serveur PostgreSQL local"
+    echo "❌ PostgreSQL is not accessible on localhost:5432"
+    echo "   Please start your local PostgreSQL server"
     exit 1
 fi
 
-echo "✅ PostgreSQL local détecté sur localhost:5432"
+echo "✅ Local PostgreSQL detected on localhost:5432"
 
-# Arrêter le conteneur s'il existe déjà
+# Stop container if it already exists
 docker rm -f demo-spring-app 2>/dev/null || true
 
-echo "🐳 Lancement du conteneur..."
+echo "🐳 Starting container..."
 
-# Lancer le conteneur avec connexion à la base locale
+# Run container with connection to local database
 docker run -d \
   --name demo-spring-app \
   -p 8080:8080 \
@@ -31,17 +31,17 @@ docker run -d \
   -e SHOW_SQL=false \
   demo-spring-app
 
-echo "⏳ Attente du démarrage de l'application..."
+echo "⏳ Waiting for application startup..."
 
-# Attendre que l'application soit prête
+# Wait for application to be ready
 for i in {1..30}; do
     if curl -s http://localhost:8080/actuator/health > /dev/null 2>&1; then
-        echo "✅ Application démarrée avec succès!"
+        echo "✅ Application started successfully!"
         break
     fi
     if [ $i -eq 30 ]; then
-        echo "❌ Timeout: L'application n'a pas démarré dans les temps."
-        echo "📋 Logs du conteneur:"
+        echo "❌ Timeout: Application failed to start within time limit."
+        echo "📋 Container logs:"
         docker logs demo-spring-app
         exit 1
     fi
@@ -50,23 +50,23 @@ for i in {1..30}; do
 done
 
 echo ""
-echo "🎉 Déploiement terminé!"
+echo "🎉 Deployment completed!"
 echo ""
-echo "📋 Informations de l'application:"
+echo "📋 Application information:"
 echo "  • URL: http://localhost:8080"
 echo "  • Health: http://localhost:8080/actuator/health"
 echo "  • API: http://localhost:8080/api/persons"
 echo ""
-echo "📊 Commandes utiles:"
-echo "  • Voir les logs: docker logs -f demo-spring-app"
-echo "  • Arrêter: docker stop demo-spring-app"
-echo "  • Supprimer: docker rm -f demo-spring-app"
+echo "📊 Useful commands:"
+echo "  • View logs: docker logs -f demo-spring-app"
+echo "  • Stop: docker stop demo-spring-app"
+echo "  • Remove: docker rm -f demo-spring-app"
 echo ""
 
-# Test rapide de l'API
-echo "🧪 Test rapide de l'API..."
+# Quick API test
+echo "🧪 Quick API test..."
 if curl -s http://localhost:8080/api/persons > /dev/null; then
     echo "✅ API accessible"
 else
-    echo "⚠️  API non accessible"
+    echo "⚠️  API not accessible"
 fi

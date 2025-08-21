@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Integer> {
     
-    // Méthodes de recherche personnalisées
+    // Custom search methods
     List<Person> findByName(String name);
     
     List<Person> findByNameContainingIgnoreCase(String name);

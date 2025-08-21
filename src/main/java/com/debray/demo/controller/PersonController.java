@@ -17,13 +17,13 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
 
-    // Récupérer toutes les personnes
+    // Retrieve all persons
     @GetMapping
     public List<Person> getAllPersons() {
         return personRepository.findAll();
     }
 
-    // Récupérer une personne par ID
+    // Retrieve a person by ID
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable Integer id) {
         Optional<Person> person = personRepository.findById(id);
@@ -31,10 +31,10 @@ public class PersonController {
                     .orElse(ResponseEntity.notFound().build());
     }
 
-    // Créer une nouvelle personne
+    // Create a new person
     @PostMapping
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        // Validation basique
+        // Basic validation
         if (person.getName() == null || person.getName().trim().isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -43,7 +43,7 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPerson);
     }
 
-    // Mettre à jour une personne
+    // Update a person
     @PutMapping("/{id}")
     public ResponseEntity<Person> updatePerson(@PathVariable Integer id, @RequestBody Person personDetails) {
         Optional<Person> optionalPerson = personRepository.findById(id);
@@ -60,7 +60,7 @@ public class PersonController {
         }
     }
 
-    // Supprimer une personne
+    // Delete a person
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable Integer id) {
         if (personRepository.existsById(id)) {
@@ -71,7 +71,7 @@ public class PersonController {
         }
     }
 
-    // Rechercher par nom
+    // Search by name
     @GetMapping("/search")
     public List<Person> searchByName(@RequestParam String name) {
         return personRepository.findByNameContainingIgnoreCase(name);
