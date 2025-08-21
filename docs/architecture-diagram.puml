@@ -1,6 +1,6 @@
 @startuml architecture
 !theme plain
-title API Person - Architecture Générale
+title Person API - General Architecture
 
 package "Presentation Layer" {
     [PersonController] as controller

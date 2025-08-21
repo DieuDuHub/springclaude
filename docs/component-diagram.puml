@@ -36,7 +36,7 @@ controller ..> mvc : extends
 repository ..> jpa : extends
 entity ..> hibernate : managed by
 
-' Connexions base de données
+' Database connections
 hibernate ..> hikari : uses
 hikari ..> driver : uses
 driver ..> PostgreSQL : connects to

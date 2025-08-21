@@ -1,13 +1,13 @@
 @startuml api-endpoints
 !theme plain
-title API Person - Endpoints REST
+title Person API - REST Endpoints
 
 actor Client
 participant PersonController
 participant PersonRepository
 database PostgreSQL
 
-== Récupérer toutes les personnes ==
+== Retrieve all persons ==
 Client -> PersonController : GET /api/persons
 PersonController -> PersonRepository : findAll()
 PersonRepository -> PostgreSQL : SELECT * FROM person
@@ -15,21 +15,21 @@ PostgreSQL --> PersonRepository : List<Person>
 PersonRepository --> PersonController : List<Person>
 PersonController --> Client : 200 OK + List<Person>
 
-== Récupérer une personne par ID ==
+== Retrieve a person by ID ==
 Client -> PersonController : GET /api/persons/{id}
 PersonController -> PersonRepository : findById(id)
 PersonRepository -> PostgreSQL : SELECT * FROM person WHERE id = ?
-alt Person trouvée
+alt Person found
     PostgreSQL --> PersonRepository : Person
     PersonRepository --> PersonController : Optional<Person>
     PersonController --> Client : 200 OK + Person
-else Person non trouvée
+else Person not found
     PostgreSQL --> PersonRepository : empty
     PersonRepository --> PersonController : Optional.empty()
     PersonController --> Client : 404 NOT FOUND
 end
 
-== Créer une nouvelle personne ==
+== Create a new person ==
 Client -> PersonController : POST /api/persons + Person JSON
 alt Validation OK
     PersonController -> PersonRepository : save(person)
@@ -41,11 +41,11 @@ else Validation KO
     PersonController --> Client : 400 BAD REQUEST
 end
 
-== Mettre à jour une personne ==
+== Update a person ==
 Client -> PersonController : PUT /api/persons/{id} + Person JSON
 PersonController -> PersonRepository : findById(id)
 PersonRepository -> PostgreSQL : SELECT * FROM person WHERE id = ?
-alt Person trouvée
+alt Person found
     PostgreSQL --> PersonRepository : Person
     PersonRepository --> PersonController : Optional<Person>
     PersonController -> PersonRepository : save(updatedPerson)
@@ -53,17 +53,17 @@ alt Person trouvée
     PostgreSQL --> PersonRepository : Updated Person
     PersonRepository --> PersonController : Person
     PersonController --> Client : 200 OK + Updated Person
-else Person non trouvée
+else Person not found
     PostgreSQL --> PersonRepository : empty
     PersonRepository --> PersonController : Optional.empty()
     PersonController --> Client : 404 NOT FOUND
 end
 
-== Supprimer une personne ==
+== Delete a person ==
 Client -> PersonController : DELETE /api/persons/{id}
 PersonController -> PersonRepository : existsById(id)
 PersonRepository -> PostgreSQL : SELECT COUNT(*) FROM person WHERE id = ?
-alt Person existe
+alt Person exists
     PostgreSQL --> PersonRepository : true
     PersonRepository --> PersonController : true
     PersonController -> PersonRepository : deleteById(id)
@@ -71,13 +71,13 @@ alt Person existe
     PostgreSQL --> PersonRepository : success
     PersonRepository --> PersonController : void
     PersonController --> Client : 204 NO CONTENT
-else Person n'existe pas
+else Person does not exist
     PostgreSQL --> PersonRepository : false
     PersonRepository --> PersonController : false
     PersonController --> Client : 404 NOT FOUND
 end
 
-== Rechercher par nom ==
+== Search by name ==
 Client -> PersonController : GET /api/persons/search?name=xxx
 PersonController -> PersonRepository : findByNameContainingIgnoreCase(name)
 PersonRepository -> PostgreSQL : SELECT * FROM person WHERE UPPER(name) LIKE UPPER(?)
